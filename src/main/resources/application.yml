@@ -32,9 +32,9 @@ spring:
 ---
 #app
 app:
-  name: name_of_email
-  smtp: smtp.test.com
-  smtpfrom:  noreply@test.com
+  name: link_verification
+  smtp: smtp.gmail.com
+  smtpfrom:  rizwanshakoor50@gmail.com
 ---
 #logging
 logging:
