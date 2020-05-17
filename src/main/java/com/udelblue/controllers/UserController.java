@@ -286,6 +286,7 @@ public class UserController {
         if (isSuccessLogin == true) {
             modelAndView = new ModelAndView("redirect:http://localhost:4200?authCode="
                     + new Random().nextInt(20000 + 4000) + "abcdef");
+
         } else {
             modelAndView = new ModelAndView(
                     "redirect:/oauth/authorize?client_id=oauth-profile&redirect_uri=/uaa/user/profile&scope=trust&response_type=token");
