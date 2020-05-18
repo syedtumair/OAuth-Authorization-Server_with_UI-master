@@ -73,6 +73,7 @@ public class LoginListener {
                     if (r.getuRI().contains("/login")) {
                         eventtype = "login";
                         UserController.isSuccessLogin = true;
+                        System.out.println("Auth Request " + appEvent.getSource().toString());
 
                     }
                     userrepository.loginAuditAccount(username, userloginTime, eventtype,
