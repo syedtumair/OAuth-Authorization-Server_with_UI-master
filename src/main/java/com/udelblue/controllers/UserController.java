@@ -2,6 +2,7 @@ package com.udelblue.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,7 +75,7 @@ public class UserController {
         }
 
         log.info("Account activated for: " + email);
-        userrepository.activeAccountFromEmail(email);
+        userrepository.activeAccountFromEmail(email, token);
         ModelAndView mav = new ModelAndView("user/activate");
         return mav;
     }
@@ -99,6 +100,7 @@ public class UserController {
         String last_name = request.getParameter("last_name");
         String first_name = request.getParameter("first_name");
         String password = request.getParameter("password");
+        String userType = request.getParameter("user_type");
 
         // String redirect = request.getParameter("redirect");
 
@@ -152,7 +154,8 @@ public class UserController {
         // create account
 
         try {
-            accountService.createAccount(display_name, password, email, first_name, last_name);
+            accountService.createAccount(display_name, password, email, first_name, last_name,
+                    userType);
         } catch (Exception e) {
             log.error(e.getMessage());
 
@@ -283,7 +286,15 @@ public class UserController {
 
         ModelAndView modelAndView = null;
         if (isSuccessLogin == true) {
-            modelAndView = new ModelAndView("redirect:http://localhost:4200");
+            String userName = userrepository.getLatestLoginAuditUsername("login");
+            Map<String, Object> userDetails = userrepository.getUserDetailsByUsername(userName);
+            String authToken = (String) userDetails.get("auth_token");
+            String userType = (String) userDetails.get("user_type");
+            System.out
+                    .println("authToken sending to FE [" + getAuthToken(userType, authToken) + "]");
+            modelAndView = new ModelAndView("redirect:http://localhost:4200?authToken="
+                    .concat(getAuthToken(userType, authToken)));
+
         } else {
             modelAndView = new ModelAndView(
                     "redirect:/oauth/authorize?client_id=oauth-profile&redirect_uri=/uaa/user/profile&scope=trust&response_type=token");
@@ -427,6 +438,11 @@ public class UserController {
         // not a valid token
         mav = new ModelAndView("redirect: reset?notvalidtoken");
         return mav;
+    }
+
+    private String getAuthToken(String userType, String authToken) {
+        return new StringBuilder().append(userType.toUpperCase()).append(".v3.").append(authToken)
+                .toString();
     }
 
 }

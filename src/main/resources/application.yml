@@ -34,7 +34,7 @@ spring:
 app:
   name: link_verification
   smtp: smtp.gmail.com
-  smtpfrom:  syedtumair@gmail.com
+  smtpfrom:  rizwanshakoor50@gmail.com
 ---
 #logging
 logging:
